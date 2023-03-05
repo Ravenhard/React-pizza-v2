@@ -1,19 +1,18 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
 import Pagination from "../components/Pagination/Pagination";
-import {Context} from "../App";
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setCurrentPage} from "../components/redux/slices/filterSlice";
 import {fetchPizzas} from "../components/redux/slices/pizzaSlice";
+import {Link} from "react-router-dom";
 
 
 function Home() {
-    const {searchValue} = useContext(Context)
-    const { items, status } = useSelector(state => state.pizza);
-    const {categoryId, sort, currentPage} = useSelector(state => state.filter);
+    const {items, status} = useSelector(state => state.pizza);
+    const {categoryId, sort, currentPage, searchValue} = useSelector(state => state.filter);
 
     const dispatch = useDispatch();
     const onClickCategory = (id) => {
@@ -44,10 +43,11 @@ function Home() {
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
     const pizzas = items.map((item, index) => (
-        <PizzaBlock
-            key={index}
+        <Link key={index} to={`/pizza/${item.id}`}><
+            PizzaBlock
             {...item}
-        />
+            />
+        </Link>
     ));
     const skeletons = [...new Array(8)].map((_, index) => <Skeleton
         key={index}/>);
@@ -63,7 +63,7 @@ function Home() {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             {
-                status === 'error' ? <div className='content__error_info' >
+                status === 'error' ? <div className='content__error_info'>
                     <h2>Произошла ошибка 😕</h2>
                     <p>Не удалось получить питсы :(</p>
                 </div> : <div className="content__items">
