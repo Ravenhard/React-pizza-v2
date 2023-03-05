@@ -11,15 +11,15 @@ import {Link} from "react-router-dom";
 
 
 function Home() {
-    const {items, status} = useSelector(state => state.pizza);
-    const {categoryId, sort, currentPage, searchValue} = useSelector(state => state.filter);
+    const {items, status} = useSelector((state:any) => state.pizza);
+    const {categoryId, sort, currentPage, searchValue} = useSelector((state:any) => state.filter);
 
     const dispatch = useDispatch();
-    const onClickCategory = (id) => {
+    const onClickCategory = (id: number) => {
         dispatch(setCategoryId(id))
     };
-    const onChangePage = (number) => {
-        dispatch(setCurrentPage(number));
+    const onChangePage = (page : number) => {
+        dispatch(setCurrentPage(page));
     };
 
     useEffect(() => {
@@ -31,7 +31,9 @@ function Home() {
 
         window.scrollTo(0, 0)
 
-        dispatch(fetchPizzas({
+        dispatch(
+            // @ts-ignore
+            fetchPizzas({
             category,
             order,
             sortBy,
@@ -42,7 +44,7 @@ function Home() {
 
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
-    const pizzas = items.map((item, index) => (
+    const pizzas = items.map((item: any, index: number) => (
         <Link key={index} to={`/pizza/${item.id}`}><
             PizzaBlock
             {...item}
