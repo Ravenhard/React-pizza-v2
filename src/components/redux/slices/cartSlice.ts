@@ -1,15 +1,32 @@
-import {createSlice} from '@reduxjs/toolkit'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {RootState} from "../store";
+import {getCartFromLS} from "../../utils/getCartFromLS";
+import {calcTotalPrice} from "../../utils/calcTotalPrice";
 
-const initialState = {
-    totalPrice: 0,
-    items: [],
+export type CartItem = {
+    id: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+    type: string;
+    size: number;
+    count: number
 }
+
+export interface CartSliceState {
+    totalPrice: number,
+    items: CartItem[],
+}
+
+// @ts-expect-error
+const initialState: CartSliceState = getCartFromLS();
+
 
 export const cartSlice = createSlice({
     name: 'cart',
     initialState: initialState,
     reducers: {
-        addItem(state, action) {
+        addItem(state, action: PayloadAction<CartItem>) {
             const findItem = state.items.find(obj => obj.id === action.payload.id);
 
             if (findItem) {
@@ -20,9 +37,7 @@ export const cartSlice = createSlice({
                     count: 1,
                 })
             }
-            state.totalPrice = state.items.reduce((sum, obj) => {
-                return (obj.price * obj.count) + sum;
-            }, 0);
+            state.totalPrice = calcTotalPrice(state.items);
         },
         minusItem(state, action) {
             const findItem = state.items.find((obj)=> obj.id === action.payload.id);
@@ -41,7 +56,7 @@ export const cartSlice = createSlice({
     },
 })
 
-export const getCart = (state) => state.cart;
+export const getCart = (state: RootState) => state.cart;
 
 export const {addItem, removeItem, clearItem, minusItem} = cartSlice.actions
 

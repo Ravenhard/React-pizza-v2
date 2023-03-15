@@ -235,6 +235,18 @@ body {
             display: none;
           }
         }
+        &--disabled {
+          opacity: 0.2;
+
+          &:active {
+            transform: none;
+          }
+
+          &:hover {
+            background-color: transparent;
+
+          }
+        }
       }
 
       b {

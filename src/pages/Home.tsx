@@ -1,26 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import Categories from "../components/Categories";
 import Sort from "../components/Sort";
 import Skeleton from "../components/PizzaBlock/Skeleton";
 import PizzaBlock from "../components/PizzaBlock/PizzaBlock";
 import Pagination from "../components/Pagination/Pagination";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {setCategoryId, setCurrentPage} from "../components/redux/slices/filterSlice";
 import {fetchPizzas} from "../components/redux/slices/pizzaSlice";
-import {Link} from "react-router-dom";
+import {useAppDispatch} from "../components/redux/store";
 
 
 function Home() {
     const {items, status} = useSelector((state:any) => state.pizza);
     const {categoryId, sort, currentPage, searchValue} = useSelector((state:any) => state.filter);
 
-    const dispatch = useDispatch();
-    const onClickCategory = (id: number) => {
+    const dispatch = useAppDispatch();
+    const onClickCategory = useCallback((id: number) => {
         dispatch(setCategoryId(id))
-    };
-    const onChangePage = (page : number) => {
+    },[])
+    const onChangePage =(page : number) => {
         dispatch(setCurrentPage(page));
-    };
+    }
 
     useEffect(() => {
 
@@ -32,7 +32,6 @@ function Home() {
         window.scrollTo(0, 0)
 
         dispatch(
-            // @ts-ignore
             fetchPizzas({
             category,
             order,
@@ -45,14 +44,11 @@ function Home() {
     }, [categoryId, sort.sortProperty, searchValue, currentPage])
 
     const pizzas = items.map((item: any, index: number) => (
-        <Link key={index} to={`/pizza/${item.id}`}><
-            PizzaBlock
-            {...item}
-            />
-        </Link>
+        <PizzaBlock key={index} {...item}/>
     ));
     const skeletons = [...new Array(8)].map((_, index) => <Skeleton
         key={index}/>);
+
 
     return (
         <div className="container">

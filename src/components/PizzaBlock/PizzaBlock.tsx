@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {addItem} from "../redux/slices/cartSlice";
+import {addItem, CartItem} from "../redux/slices/cartSlice";
+import {Link} from "react-router-dom";
 
-type pizzablockProps = {
-    name:string,
-    price:number,
-    imageUrl:string,
-    sizes:number[],
-    types:number[],
-    id:string};
+type pizzaBlockProps = {
+    name: string,
+    price: number,
+    imageUrl: string,
+    sizes: number[],
+    types: number[],
+    id: string;
+};
 
-function PizzaBlock({name, price, imageUrl, sizes, types, id}:pizzablockProps) {
+function PizzaBlock({name, price, imageUrl, sizes, types, id}:pizzaBlockProps) {
 
     const dispatch = useDispatch();
     const cartItem = useSelector( (state :any) => state.cart.items.find((obj:any) => obj.id === id) )
@@ -22,13 +24,14 @@ function PizzaBlock({name, price, imageUrl, sizes, types, id}:pizzablockProps) {
     const typeNames = ['тонкое', 'традиционное'];
 
     const onClickAdd = () => {
-        const item = {
+        const item: CartItem = {
             id,
             name,
             price,
             imageUrl,
             type: typeNames[activeType],
-            size: sizes[activeSize]
+            size: sizes[activeSize],
+            count: 0,
         };
         dispatch(addItem(item))
     }
@@ -36,11 +39,13 @@ function PizzaBlock({name, price, imageUrl, sizes, types, id}:pizzablockProps) {
     return (
         <div className='pizza-block-wrapper' >
             <div className="pizza-block">
-                <img
-                    className="pizza-block__image"
-                    src={imageUrl}
-                    alt="Pizza"
-                />
+                <Link to={`/pizza/${id}`}>
+                    <img
+                        className="pizza-block__image"
+                        src={imageUrl}
+                        alt="Pizza"
+                    />
+                </Link>
                 <h4 className="pizza-block__title">{name}</h4>
                 <div className="pizza-block__selector">
                     <ul>

@@ -1,13 +1,13 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {setCategoryId, setSort} from "./redux/slices/filterSlice";
+import {RootState} from "./redux/store";
 
 function Sort() {
 
-
-    const sort = useSelector((state: any) => state.filter.sort)
+    const sort = useSelector((state: RootState) => state.filter.sort)
     const dispatch = useDispatch()
-    const onClickCategory = (id: sortItem) => {
+    const onClickCategory = (id: number) => {
         dispatch(setCategoryId(id))
     }
     const sortRef = useRef<HTMLDivElement>(null)
@@ -64,7 +64,7 @@ function Sort() {
                 open && <div className="sort__popup">
                     <ul>
                         {
-                            list.map((obj, index) => <li
+                            list.map((obj: any, index) => <li
                                 key={index}
                                 onClick={() => {
                                     onClickCategory(obj)
